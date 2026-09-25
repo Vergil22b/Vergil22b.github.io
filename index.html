@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AML Alert Prioritization — EDA</title>
+<title>AML Alert Prioritization — EDA | Team CyberBaza</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0;background:#0f1420;color:#e6e9f0}
@@ -16,8 +16,11 @@
  th{background:#25304d}
  code{background:#25304d;padding:1px 5px;border-radius:4px;font-size:12px}
  .note{background:#1f2a1f;border:1px solid #3a5234;border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px}
+ .brand{font-size:14px;color:#7fb3ff;margin:-8px 0 18px}
+ .footer{margin-top:40px;padding-top:14px;border-top:1px solid #2a3350;color:#7a86a3;font-size:13px}
 </style></head><body><div class="wrap">
 <h1>AML Alert Prioritization — Exploratory Data Analysis</h1>
+<p class="brand">Team <b>CyberBaza</b> · AML alert prioritization · hackathon entry</p>
 <p>Public static report. Data: 20,000 alerts + ~10.0M transactions (train/test). Metric: ROC-AUC on <code>eskalatsiya</code>.</p>
 
 <h2>0. Approach</h2>
@@ -73,7 +76,7 @@ the leak-free window <code>tranzaksiya_vaqti &lt; signal_sanasi + 1 day</code> (
 </ul>
 
 <h2>7. Modeling</h2>
-<div class="note">Validation: test and train are <b>interleaved in time</b> (728 shared dates) → primary scheme is 5-fold stratified random CV; time-based holdouts (valid &ge; 2026-01 / 2026-07) used as robustness check. Final pipeline = rank-normalized equal-weight blend of XGBoost + LightGBM + CatBoost + LogisticRegression on a top-120 subset by gain stability.</div>
+<div class="note">Validation: test and train are <b>interleaved in time</b> (728 shared dates) → primary scheme is 5-fold stratified random CV; time-based holdouts (valid &ge; 2026-01 / 2026-07) used as robustness check. Final pipeline = rank-normalized equal-weight blend of XGBoost + LightGBM + CatBoost + LogisticRegression on the selected <b>100-feature subset</b> (deterministic selection by gain stability, seed 42). Production 5-fold OOF blend AUC <b>0.641</b>; temporal holdouts blend <b>0.644</b> (≥2026-01) and <b>0.680</b> (≥2026-07). Iteration budgets come from OOS early stopping on a 12% stratified holdout, then a refit on 100% of train.</div>
 <table id="modelTbl"></table>
 
 <h2>8. Conclusion</h2>
@@ -111,4 +114,6 @@ Plotly.newPlot('winPlot',[
  {x:D.windows.labels,y:D.windows.share,type:'scatter',yaxis:'y2',name:'% alerts with tx in window'}],
  {title:'Pre-alert window coverage',yaxis:{title:'tx count'},yaxis2:{overlaying:'y',side:'right',title:'share'}},{displayModeBar:false});
 Plotly.newPlot('diffPlot',[{x:D.differences.map(r=>r.feature),y:D.differences.map(r=>r.effect_size),type:'bar'}],{title:'Effect size (escalated vs dismissed)',yaxis:{title:'std units'}},{displayModeBar:false});
-</script></div></body></html>
+</script>
+<p class="footer">© 2026 Team CyberBaza · AML Alert Prioritization</p>
+</div></body></html>
