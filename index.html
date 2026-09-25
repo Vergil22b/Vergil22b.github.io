@@ -12,15 +12,16 @@
  .card b{font-size:26px;color:#7fb3ff}
  .plot{background:#1a2233;border-radius:10px;padding:8px;margin:12px 0}
  table{border-collapse:collapse;width:100%;background:#1a2233;border-radius:8px;overflow:hidden}
- th,td{border:1px solid #2a3350;padding:6px 10px;font-size:13px;text-align:left}
+ th,td{border:1px solid #2a3350;padding:6px 10px;font-size:13px;text-align:left;overflow-wrap:anywhere;word-break:break-word}
  th{background:#25304d}
  code{background:#25304d;padding:1px 5px;border-radius:4px;font-size:12px}
  .note{background:#1f2a1f;border:1px solid #3a5234;border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px}
- .brand{font-size:14px;color:#7fb3ff;margin:-8px 0 18px}
+ .brand{display:inline-block;font-size:15px;color:#9fd0ff;border:1px solid #2f5a9e;border-radius:6px;padding:6px 12px;margin:0 0 18px;background:#12203a}
+ .tblwrap{width:100%;overflow-x:auto}
  .footer{margin-top:40px;padding-top:14px;border-top:1px solid #2a3350;color:#7a86a3;font-size:13px}
 </style></head><body><div class="wrap">
 <h1>AML Alert Prioritization — Exploratory Data Analysis</h1>
-<p class="brand">Team <b>CyberBaza</b> · AML alert prioritization · hackathon entry</p>
+<p class="brand">&#9733; A work of Team <b>CyberBaza</b> — AML alert prioritization · hackathon entry</p>
 <p>Public static report. Data: 20,000 alerts + ~10.0M transactions (train/test). Metric: ROC-AUC on <code>eskalatsiya</code>.</p>
 
 <h2>0. Approach</h2>
@@ -38,7 +39,7 @@ the leak-free window <code>tranzaksiya_vaqti &lt; signal_sanasi + 1 day</code> (
 
 <h2>1. Dataset</h2>
 <div class="cards" id="cards"></div>
-<table id="schemaTbl" style="margin-top:14px"></table>
+<div class="tblwrap"><table id="schemaTbl" style="margin-top:14px"></table></div>
 <div style="margin-top:8px" class="note">Missing values per file: train_signals <b>0</b>, test_signals <b>0</b>, train_transactions <b>0</b>, test_transactions <b>0</b>.</div>
 <div class="plot" id="txHist"></div>
 
@@ -58,7 +59,7 @@ the leak-free window <code>tranzaksiya_vaqti &lt; signal_sanasi + 1 day</code> (
 
 <h2>5. Escalated vs dismissed</h2>
 <div class="plot" id="diffPlot"></div>
-<table id="diffTbl"></table>
+<div class="tblwrap"><table id="diffTbl"></table></div>
 
 <h2>6. Features</h2>
 <p>Per-signal features (signal_id as key only, no target encoding):</p>
@@ -77,7 +78,7 @@ the leak-free window <code>tranzaksiya_vaqti &lt; signal_sanasi + 1 day</code> (
 
 <h2>7. Modeling</h2>
 <div class="note">Validation: test and train are <b>interleaved in time</b> (728 shared dates) → primary scheme is 5-fold stratified random CV; time-based holdouts (valid &ge; 2026-01 / 2026-07) used as robustness check. Final pipeline = rank-normalized equal-weight blend of XGBoost + LightGBM + CatBoost + LogisticRegression on the selected <b>100-feature subset</b> (deterministic selection by gain stability, seed 42). Production 5-fold OOF blend AUC <b>0.641</b>; temporal holdouts blend <b>0.644</b> (≥2026-01) and <b>0.680</b> (≥2026-07). Iteration budgets come from OOS early stopping on a 12% stratified holdout, then a refit on 100% of train.</div>
-<table id="modelTbl"></table>
+<div class="tblwrap"><table id="modelTbl"></table></div>
 
 <h2>8. Conclusion</h2>
 <ul>
